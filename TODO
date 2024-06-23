@@ -1,0 +1,4 @@
+2024.06.23
+
+I'm planing to impl the instructions one by one. Modifications of the control
+signals and datapath should be allowd in this progressive pattern.

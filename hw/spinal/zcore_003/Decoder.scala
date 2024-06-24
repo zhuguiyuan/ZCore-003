@@ -9,7 +9,7 @@ object CtrlSignals {
   }
 
   object WriteBackSrc extends SpinalEnum {
-    val rd, rt, shamt = newElement()
+    val rd, rt = newElement()
   }
 
   object ExtType extends SpinalEnum {

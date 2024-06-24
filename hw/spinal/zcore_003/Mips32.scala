@@ -47,7 +47,7 @@ case class Mips32() extends Component {
   val aluResult = Alu(aluSrcA, aluSrcB, instInfo1.aluOp)
   val extImm = Bits(32 bits)
   val regFile = RegFile(
-    instInfo0.rd,
+    writeBackSrc,
     instInfo0.rs,
     instInfo0.rt,
     True,

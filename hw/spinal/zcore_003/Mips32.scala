@@ -36,21 +36,36 @@ case class Mips32() extends Component {
   rf_waddr.setName("RF_waddr")
   rf_wdata.setName("RF_data")
 
+  import CtrlSignals._
+
   val instInfo0 = InstDecoderStage0(io.instruction)
   val instInfo1 = InstDecoderStage1(instInfo0.instType)
-
   val aluSrcA, aluSrcB = Bits(32 bits)
-  val aluOp = AluOp.add
+  val writeBackSrc = UInt(5 bits)
 
   val pc = Reg(UInt(32 bits))
-  pc := pc + 4
-  val aluResult = Alu(aluSrcA, aluSrcB, aluOp)
+  val aluResult = Alu(aluSrcA, aluSrcB, instInfo1.aluOp)
+  val extImm = Bits(32 bits)
   val regFile = RegFile(
     instInfo0.rd.asUInt,
     instInfo0.rs.asUInt,
     instInfo0.rt.asUInt,
     True,
     aluResult.value
+  )
+  pc := pc + 4
+
+  extImm := instInfo1.extType.mux(
+    ExtType.zeroExt ->instInfo0.imm.resize(32 bits),
+    ExtType.signExt -> instInfo0.imm.asSInt.resize(32 bits).asBits
+  )
+  aluSrcB := instInfo1.aluBSrc.mux(
+    AluBSrc.rt ->regFile.rdata2,
+    AluBSrc.imm -> extImm
+  )
+  writeBackSrc := instInfo1.writeBackSrc.mux(
+    WriteBackSrc.rd -> instInfo0.rd.asUInt,
+    WriteBackSrc.rt -> instInfo0.rt.asUInt,
   )
 
   io.pc := pc

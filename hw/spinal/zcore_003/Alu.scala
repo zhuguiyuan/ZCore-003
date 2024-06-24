@@ -7,61 +7,69 @@ object AluOp extends SpinalEnum(defaultEncoding = binarySequential) {
   val and, or, add, sltu, xor, nor, sub, slt = newElement()
 }
 
-case class Alu() extends Component {
-  val io = new Bundle {
-    val a, b = in Bits (32 bits)
-    val aluOp = in(AluOp())
-    val overflow, carryOut, zero = out Bool ()
-    val result = out Bits (32 bits)
-  }
+case class AluResult() extends Bundle {
+  val overflow, carryOut, zero = Bool()
+  val value = Bits(32 bits)
+}
 
-  io.carryOut := False
-  switch(io.aluOp) {
-    is(AluOp.and) {
-      io.result := io.a & io.b
-    }
-    is(AluOp.or) {
-      io.result := io.a | io.b
-    }
-    is(AluOp.add) {
-      (io.carryOut, io.result) := io.a.asUInt +^ io.b.asUInt
-    }
-    is(AluOp.sltu) {
-      when(io.a.asUInt < io.b.asUInt) {
-        io.result := 1
-      } otherwise {
-        io.result := 0
+object Alu {
+  def apply(a: Bits, b: Bits, aluOp: AluOp.C): AluResult = {
+    val ret = AluResult()
+    ret.carryOut := False
+    switch(aluOp) {
+      is(AluOp.and) {
+        ret.value := a & b
+      }
+      is(AluOp.or) {
+        ret.value := a | b
+      }
+      is(AluOp.add) {
+        (ret.carryOut, ret.value) := a.asUInt +^ b.asUInt
+      }
+      is(AluOp.sltu) {
+        when(a.asUInt < b.asUInt) {
+          ret.value := 1
+        } otherwise {
+          ret.value := 0
+        }
+      }
+      is(AluOp.xor) {
+        ret.value := a ^ b
+      }
+      is(AluOp.nor) {
+        ret.value := ~(a | b)
+      }
+      is(AluOp.sub) {
+        (ret.carryOut, ret.value) := a.asUInt -^ b.asUInt
+      }
+      is(AluOp.slt) {
+        when(a.asSInt < b.asSInt) {
+          ret.value := 1
+        } otherwise {
+          ret.value := 0
+        }
       }
     }
-    is(AluOp.xor) {
-      io.result := io.a ^ io.b
+    ret.overflow := False
+    when(aluOp === AluOp.add) {
+      ret.overflow := (a.msb === b.msb) & (a.msb =/= ret.value.msb)
+    } elsewhen (aluOp === AluOp.sub) {
+      ret.overflow := (a.msb =/= b.msb) & (a.msb =/= ret.value.msb)
     }
-    is(AluOp.nor) {
-      io.result := ~(io.a | io.b)
-    }
-    is(AluOp.sub) {
-      (io.carryOut, io.result) := io.a.asUInt -^ io.b.asUInt
-    }
-    is(AluOp.slt) {
-      when(io.a.asSInt < io.b.asSInt) {
-        io.result := 1
-      } otherwise {
-        io.result := 0
-      }
-    }
+    ret.zero := ret.value === 0
+    ret
   }
-
-  io.overflow := False
-  when(io.aluOp === AluOp.add) {
-    io.overflow := (io.a.msb === io.b.msb) & (io.a.msb =/= io.result.msb)
-  } elsewhen (io.aluOp === AluOp.sub) {
-    io.overflow := (io.a.msb =/= io.b.msb) & (io.a.msb =/= io.result.msb)
-  }
-
-  io.zero := io.result === 0
 }
 
 object AluVerilog extends App {
-  val report = Config.spinal.generateVerilog(Alu())
+  val report = Config.spinal.generateVerilog(new Component {
+    val io = new Bundle {
+      val a, b = in Bits (32 bits)
+      val aluOp = in(AluOp())
+      val overflow, carryOut, zero = out Bool ()
+      val result = out Bits (32 bits)
+    }
+    (io.overflow, io.carryOut, io.zero, io.result) := Alu(io.a, io.b, io.aluOp)
+  })
   println(report.getRtlString())
 }

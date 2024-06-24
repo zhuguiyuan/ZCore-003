@@ -50,9 +50,87 @@ object InstDecoderStage1 {
   def apply(instType: InstType.C): InstDecoderInfo1 = {
     val ret = InstDecoderInfo1()
     val decoderMap = Map(
+      InstType.addu -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.subu -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.sub,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.and -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.and,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.or -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.or,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.xor -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.xor,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.nor -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.nor,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.slt -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.slt,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.sltu -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.sltu,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
       InstType.addiu -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.add,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.andi -> InstDecoderInfo1(
+        AluBSrc.imm,
+        AluOp.and,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.ori -> InstDecoderInfo1(
+        AluBSrc.imm,
+        AluOp.or,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.xori -> InstDecoderInfo1(
+        AluBSrc.imm,
+        AluOp.xor,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.slti -> InstDecoderInfo1(
+        AluBSrc.imm,
+        AluOp.slt,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      ),
+      InstType.sltiu -> InstDecoderInfo1(
+        AluBSrc.imm,
+        AluOp.sltu,
         ShiftOp.logicL,
         WriteBackSrc.rd
       )
@@ -61,7 +139,7 @@ object InstDecoderStage1 {
       AluBSrc.imm,
       AluOp.add,
       ShiftOp.logicL,
-      WriteBackSrc.rd
+      WriteBackSrc.rt
     )
 
     switch(instType) {
@@ -102,7 +180,20 @@ object InstDecoderStage0 {
     ret.imm := instruction(15 downto 0)
     ret.taddr := instruction(25 downto 0)
     val decodingMap = Map(
-      M"001001--------------------------" -> InstType.addiu
+      M"000000---------------00000100001" -> InstType.addu,
+      M"000000---------------00000100011" -> InstType.subu,
+      M"000000---------------00000100100" -> InstType.and,
+      M"000000---------------00000100101" -> InstType.or,
+      M"000000---------------00000100110" -> InstType.xor,
+      M"000000---------------00000100111" -> InstType.nor,
+      M"000000---------------00000101010" -> InstType.slt,
+      M"000000---------------00000101011" -> InstType.sltu,
+      M"001001--------------------------" -> InstType.addiu,
+      M"001100--------------------------" -> InstType.andi,
+      M"001101--------------------------" -> InstType.ori,
+      M"001110--------------------------" -> InstType.xori,
+      M"001010--------------------------" -> InstType.slti,
+      M"001011--------------------------" -> InstType.sltiu
     )
     switch(instruction) {
       for ((k, v) <- decodingMap) {

@@ -1,3 +1,10 @@
+2024.06.25
+
+The instructions need to be impled are:
+  - bne, beq, bgez, bgtz, blez, bltz, j, jal, jr, jalr
+  - lb, lh, lw, lbu, lhu, lwl, lwr, sb, sh, sw, shl, swr
+  - movn, movz, lui
+
 2024.06.23
 
 I'm planing to impl the instructions one by one. Modifications of the control

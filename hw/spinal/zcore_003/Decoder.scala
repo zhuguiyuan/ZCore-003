@@ -16,7 +16,7 @@ object CtrlSignals {
     val alu, shifter = newElement()
   }
 
-  object ExtType extends SpinalEnum {
+  object ImmExtType extends SpinalEnum {
     val zeroExt, signExt = newElement()
   }
 
@@ -36,7 +36,7 @@ object InstDecoderInfo1 {
       shiftSrc: ShiftSrc.C,
       writeBackRegSrc: WriteBackRegSrc.C,
       writeBackDataSrc: WriteBackDataSrc.C,
-      extType: ExtType.C
+      immExtType: ImmExtType.C
   ): InstDecoderInfo1 = {
     val ret = InstDecoderInfo1()
 
@@ -46,7 +46,7 @@ object InstDecoderInfo1 {
     ret.shiftSrc := shiftSrc
     ret.writeBackRegSrc := writeBackRegSrc
     ret.writeBackDataSrc := writeBackDataSrc
-    ret.extType := extType
+    ret.immExtType := immExtType
 
     ret
   }
@@ -61,7 +61,7 @@ case class InstDecoderInfo1() extends Bundle {
   val shiftSrc = ShiftSrc()
   val writeBackRegSrc = WriteBackRegSrc()
   val writeBackDataSrc = WriteBackDataSrc()
-  val extType = ExtType()
+  val immExtType = ImmExtType()
 }
 
 object InstDecoderStage1 {
@@ -77,7 +77,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.subu -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -86,7 +86,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.and -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -95,7 +95,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.or -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -104,7 +104,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.xor -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -113,7 +113,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.nor -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -122,7 +122,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.slt -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -131,7 +131,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.sltu -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -140,7 +140,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.addiu -> InstDecoderInfo1(
         AluBSrc.imm,
@@ -149,7 +149,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.andi -> InstDecoderInfo1(
         AluBSrc.imm,
@@ -158,7 +158,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.ori -> InstDecoderInfo1(
         AluBSrc.imm,
@@ -167,7 +167,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.xori -> InstDecoderInfo1(
         AluBSrc.imm,
@@ -176,7 +176,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.zeroExt
+        ImmExtType.zeroExt
       ),
       InstType.slti -> InstDecoderInfo1(
         AluBSrc.imm,
@@ -185,7 +185,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.sltiu -> InstDecoderInfo1(
         AluBSrc.imm,
@@ -194,7 +194,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.sll -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -203,7 +203,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.sllv -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -212,7 +212,7 @@ object InstDecoderStage1 {
         ShiftSrc.rs,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.sra -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -221,7 +221,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.srav -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -230,7 +230,7 @@ object InstDecoderStage1 {
         ShiftSrc.rs,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.srl -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -239,7 +239,7 @@ object InstDecoderStage1 {
         ShiftSrc.sa,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ExtType.signExt
+        ImmExtType.signExt
       ),
       InstType.srlv -> InstDecoderInfo1(
         AluBSrc.rt,
@@ -248,7 +248,7 @@ object InstDecoderStage1 {
         ShiftSrc.rs,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ExtType.signExt
+        ImmExtType.signExt
       )
     )
     val nopCtrl = InstDecoderInfo1(
@@ -258,7 +258,7 @@ object InstDecoderStage1 {
       ShiftSrc.sa,
       WriteBackRegSrc.rt,
       WriteBackDataSrc.alu,
-      ExtType.zeroExt
+      ImmExtType.zeroExt
     )
 
     switch(instType) {

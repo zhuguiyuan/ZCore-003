@@ -58,9 +58,9 @@ case class Mips32() extends Component {
   val shifter = Shifter(regFile.rdata2, shiftSrc, instInfo1.shiftOp)
   pc := pc + 4
 
-  extImm := instInfo1.extType.mux(
-    ExtType.zeroExt -> instInfo0.imm.resize(32 bits),
-    ExtType.signExt -> instInfo0.imm.asSInt.resize(32 bits).asBits
+  extImm := instInfo1.immExtType.mux(
+    ImmExtType.zeroExt -> instInfo0.imm.resize(32 bits),
+    ImmExtType.signExt -> instInfo0.imm.asSInt.resize(32 bits).asBits
   )
   aluSrcB := instInfo1.aluBSrc.mux(
     AluBSrc.rt -> regFile.rdata2,

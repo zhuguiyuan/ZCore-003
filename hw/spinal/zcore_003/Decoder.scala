@@ -3,6 +3,71 @@ package zcore_003
 import spinal.core._
 import spinal.lib._
 
+object CtrlSignals {
+  object AluBSrc extends SpinalEnum {
+    val rt, imm = newElement()
+  }
+
+  object WriteBackSrc extends SpinalEnum {
+    val rd, rt, shamt = newElement()
+  }
+
+}
+
+object InstDecoderInfo1 {
+  import CtrlSignals._
+
+  // Helper function to build the bundle.
+  def apply(
+      aluBSrc: AluBSrc.C,
+      aluOp: AluOp.C,
+      shiftOp: ShiftOp.C,
+      writeBackSrc: WriteBackSrc.C
+  ): InstDecoderInfo1 = {
+    val ret = InstDecoderInfo1()
+
+    ret.aluBSrc := aluBSrc
+    ret.aluOp := aluOp
+    ret.shiftOp := shiftOp
+    ret.writeBackSrc := writeBackSrc
+
+    ret
+  }
+}
+
+case class InstDecoderInfo1() extends Bundle {
+  import CtrlSignals._
+
+  val aluBSrc = AluBSrc()
+  val aluOp = AluOp()
+  val shiftOp = ShiftOp()
+  val writeBackSrc = WriteBackSrc()
+}
+
+object InstDecoderStage1 {
+  import CtrlSignals._
+
+  def apply(instType: InstType.C): InstDecoderInfo1 = {
+    val ret = InstDecoderInfo1()
+    val decoderMap = Map(
+      InstType.addiu -> InstDecoderInfo1(
+        AluBSrc.imm,
+        AluOp.add,
+        ShiftOp.logicL,
+        WriteBackSrc.rd
+      )
+    )
+
+    switch(instType) {
+      for ((k, v) <- decoderMap) {
+        is(k) { ret := v }
+      }
+    }
+
+    ret
+  }
+}
+
 case class InstDecoderInfo0() extends Bundle {
   val instType = InstType()
   val op = Bits(6 bits)

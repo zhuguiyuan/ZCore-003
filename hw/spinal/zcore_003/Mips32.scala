@@ -37,6 +37,8 @@ case class Mips32() extends Component {
   rf_wdata.setName("RF_data")
 
   val instInfo0 = InstDecoderStage0(io.instruction)
+  val instInfo1 = InstDecoderStage1(instInfo0.instType)
+
   val aluSrcA, aluSrcB = Bits(32 bits)
   val aluOp = AluOp.add
 

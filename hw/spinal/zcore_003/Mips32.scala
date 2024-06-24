@@ -36,6 +36,27 @@ case class Mips32() extends Component {
   rf_waddr.setName("RF_waddr")
   rf_wdata.setName("RF_data")
 
+  val instInfo0 = InstDecoderStage0(io.instruction)
+  val aluSrcA, aluSrcB = Bits(32 bits)
+  val aluOp = AluOp.add
+
+  val pc = Reg(UInt(32 bits))
+  pc := pc + 4
+  val aluResult = Alu(aluSrcA, aluSrcB, aluOp)
+  val regFile = RegFile(
+    instInfo0.instRd.asUInt,
+    instInfo0.instRs.asUInt,
+    instInfo0.instRt.asUInt,
+    True,
+    aluResult.value
+  )
+
+  io.pc := pc
+  io.address := 0
+  io.memWrite := False
+  io.writeData := 0
+  io.writeStrb := 0
+  io.memRead := False
 }
 
 object Mips32Verilog extends App {

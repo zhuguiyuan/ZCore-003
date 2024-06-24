@@ -17,6 +17,8 @@ case class InstDecoderInfo0() extends Bundle {
 
 object InstDecoderStage0 {
   def apply(instruction: Bits): InstDecoderInfo0 = {
+    require(instruction.getBitsWidth == 32)
+
     val ret = InstDecoderInfo0()
 
     ret.instOp := instruction(31 downto 26)

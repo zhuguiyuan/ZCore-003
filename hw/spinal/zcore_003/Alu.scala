@@ -14,7 +14,11 @@ case class AluResult() extends Bundle {
 
 object Alu {
   def apply(a: Bits, b: Bits, aluOp: AluOp.C): AluResult = {
+    require(a.getBitsWidth == 32)
+    require(b.getBitsWidth == 32)
+
     val ret = AluResult()
+
     ret.carryOut := False
     switch(aluOp) {
       is(AluOp.and) {
@@ -57,6 +61,7 @@ object Alu {
       ret.overflow := (a.msb =/= b.msb) & (a.msb =/= ret.value.msb)
     }
     ret.zero := ret.value === 0
+
     ret
   }
 }

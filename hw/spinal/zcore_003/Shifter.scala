@@ -7,26 +7,24 @@ object ShiftOp extends SpinalEnum {
   val logicL, arithR, logicR = newElement()
 }
 
-case class Shifter() extends Component {
-  val io = new Bundle {
-    val a = in Bits (32 bits)
-    val b = in Bits (5 bits)
-    val shiftOp = in(ShiftOp())
-    val result = out Bits (32 bits)
-  }
-  val results = Map(
-    ShiftOp.arithR -> (io.a.asSInt >> io.b.asUInt),
-    ShiftOp.logicL -> (io.a |<< io.b.asUInt),
-    ShiftOp.logicR -> (io.a |>> io.b.asUInt)
-  )
-  switch(io.shiftOp) {
-    for ((k, v) <- results) {
-      is(k) { io.result := v.asBits }
-    }
-  }
-}
+object Shifter {
+  def apply(a: Bits, b: Bits, shiftOp: ShiftOp.C): Bits = {
+    require(a.getBitsWidth == 32)
+    require(b.getBitsWidth == 5)
 
-object ShifterVerilog extends App {
-  val report = Config.spinal.generateVerilog(Shifter())
-  println(report.getRtlString())
+    val ret = Bits(32 bits)
+
+    val results = Map(
+      ShiftOp.arithR -> (a.asSInt >> b.asUInt),
+      ShiftOp.logicL -> (a |<< b.asUInt),
+      ShiftOp.logicR -> (a |>> b.asUInt)
+    )
+    switch(shiftOp) {
+      for ((k, v) <- results) {
+        is(k) { ret := v.asBits }
+      }
+    }
+
+    ret
+  }
 }

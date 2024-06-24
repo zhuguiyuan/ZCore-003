@@ -17,38 +17,26 @@ case class InstDecoderInfo0() extends Bundle {
 
 object InstDecoderStage0 {
   def apply(instruction: Bits): InstDecoderInfo0 = {
-    val content = new InstDecoderStage0()
-    content.io.instruction <> instruction
-    content.io.instInfo
-  }
-}
+    val ret = InstDecoderInfo0()
 
-class InstDecoderStage0() extends Component {
-  val io = new Bundle {
-    val instruction = in Bits (32 bits)
-    val instInfo = out(InstDecoderInfo0())
-  }
-
-  io.instInfo.instOp := io.instruction(31 downto 26)
-  io.instInfo.instRs := io.instruction(25 downto 21)
-  io.instInfo.instRt := io.instruction(20 downto 16)
-  io.instInfo.instRd := io.instruction(15 downto 11)
-  io.instInfo.instShamt := io.instruction(10 downto 6)
-  io.instInfo.instFunct := io.instruction(5 downto 0)
-  io.instInfo.instImm := io.instruction(15 downto 0)
-  io.instInfo.instTAddr := io.instruction(25 downto 0)
-  val decodingMap = Map(
-    M"001001--------------------------" -> InstType.addiu
-  )
-  switch(io.instruction) {
-    for ((k, v) <- decodingMap) {
-      is(k) { io.instInfo.instType := v }
+    ret.instOp := instruction(31 downto 26)
+    ret.instRs := instruction(25 downto 21)
+    ret.instRt := instruction(20 downto 16)
+    ret.instRd := instruction(15 downto 11)
+    ret.instShamt := instruction(10 downto 6)
+    ret.instFunct := instruction(5 downto 0)
+    ret.instImm := instruction(15 downto 0)
+    ret.instTAddr := instruction(25 downto 0)
+    val decodingMap = Map(
+      M"001001--------------------------" -> InstType.addiu
+    )
+    switch(instruction) {
+      for ((k, v) <- decodingMap) {
+        is(k) { ret.instType := v }
+      }
+      default -> { ret.instType := InstType.invalid }
     }
-    default -> { io.instInfo.instType := InstType.invalid }
-  }
-}
 
-object InstDecoderStage0Verilog extends App {
-  val report = Config.spinal.generateVerilog(new InstDecoderStage0())
-  println(report.getRtlString())
+    ret
+  }
 }

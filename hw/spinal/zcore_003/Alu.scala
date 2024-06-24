@@ -14,7 +14,6 @@ case class Alu() extends Component {
     val overflow, carryOut, zero = out Bool ()
     val result = out Bits (32 bits)
   }
-  noIoPrefix()
 
   io.carryOut := False
   switch(io.aluOp) {

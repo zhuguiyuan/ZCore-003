@@ -10,7 +10,6 @@ case class RegFile() extends Component {
     val wdata = in Bits (32 bits)
     val rdata1, rdata2 = out Bits (32 bits)
   }
-  noIoPrefix()
 
   val registers = Vec.fill(32)(Reg(Bits(32 bits)))
   when(io.wen) {

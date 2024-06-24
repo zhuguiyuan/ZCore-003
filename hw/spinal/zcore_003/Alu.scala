@@ -65,16 +65,3 @@ object Alu {
     ret
   }
 }
-
-object AluVerilog extends App {
-  val report = Config.spinal.generateVerilog(new Component {
-    val io = new Bundle {
-      val a, b = in Bits (32 bits)
-      val aluOp = in(AluOp())
-      val overflow, carryOut, zero = out Bool ()
-      val result = out Bits (32 bits)
-    }
-    (io.overflow, io.carryOut, io.zero, io.result) := Alu(io.a, io.b, io.aluOp)
-  })
-  println(report.getRtlString())
-}

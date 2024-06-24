@@ -204,6 +204,51 @@ object InstDecoderStage1 {
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
         ExtType.signExt
+      ),
+      InstType.sllv -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.logicL,
+        ShiftSrc.rs,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ExtType.signExt
+      ),
+      InstType.sra -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.arithR,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ExtType.signExt
+      ),
+      InstType.srav -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.arithR,
+        ShiftSrc.rs,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ExtType.signExt
+      ),
+      InstType.srl -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.logicR,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ExtType.signExt
+      ),
+      InstType.srlv -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.logicR,
+        ShiftSrc.rs,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ExtType.signExt
       )
     )
     val nopCtrl = InstDecoderInfo1(
@@ -268,7 +313,12 @@ object InstDecoderStage0 {
       M"001110--------------------------" -> InstType.xori,
       M"001010--------------------------" -> InstType.slti,
       M"001011--------------------------" -> InstType.sltiu,
-      M"00000000000---------------000000" -> InstType.sll
+      M"00000000000---------------000000" -> InstType.sll,
+      M"00000000000---------------000100" -> InstType.sllv,
+      M"00000000000---------------000011" -> InstType.sra,
+      M"00000000000---------------000111" -> InstType.srav,
+      M"00000000000---------------000010" -> InstType.srl,
+      M"00000000000---------------000110" -> InstType.srlv
     )
     switch(instruction) {
       for ((k, v) <- decodingMap) {

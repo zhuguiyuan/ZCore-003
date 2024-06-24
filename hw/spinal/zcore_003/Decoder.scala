@@ -12,6 +12,9 @@ object CtrlSignals {
     val rd, rt, shamt = newElement()
   }
 
+  object ExtType extends SpinalEnum {
+    val zeroExt, signExt = newElement()
+  }
 }
 
 object InstDecoderInfo1 {
@@ -22,7 +25,8 @@ object InstDecoderInfo1 {
       aluBSrc: AluBSrc.C,
       aluOp: AluOp.C,
       shiftOp: ShiftOp.C,
-      writeBackSrc: WriteBackSrc.C
+      writeBackSrc: WriteBackSrc.C,
+      extType: ExtType.C
   ): InstDecoderInfo1 = {
     val ret = InstDecoderInfo1()
 
@@ -30,6 +34,7 @@ object InstDecoderInfo1 {
     ret.aluOp := aluOp
     ret.shiftOp := shiftOp
     ret.writeBackSrc := writeBackSrc
+    ret.extType := extType
 
     ret
   }
@@ -42,6 +47,7 @@ case class InstDecoderInfo1() extends Bundle {
   val aluOp = AluOp()
   val shiftOp = ShiftOp()
   val writeBackSrc = WriteBackSrc()
+  val extType = ExtType()
 }
 
 object InstDecoderStage1 {
@@ -54,92 +60,107 @@ object InstDecoderStage1 {
         AluBSrc.rt,
         AluOp.add,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.subu -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.sub,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.and -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.and,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.or -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.or,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.xor -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.xor,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.nor -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.nor,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.slt -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.slt,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.sltu -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.sltu,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.addiu -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.add,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.signExt
       ),
       InstType.andi -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.and,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.ori -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.or,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.xori -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.xor,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.zeroExt
       ),
       InstType.slti -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.slt,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.signExt
       ),
       InstType.sltiu -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.sltu,
         ShiftOp.logicL,
-        WriteBackSrc.rd
+        WriteBackSrc.rd,
+        ExtType.signExt
       )
     )
     val nopCtrl = InstDecoderInfo1(
-      AluBSrc.imm,
+      AluBSrc.rt,
       AluOp.add,
       ShiftOp.logicL,
-      WriteBackSrc.rt
+      WriteBackSrc.rt,
+      ExtType.zeroExt
     )
 
     switch(instType) {

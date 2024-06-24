@@ -57,11 +57,18 @@ object InstDecoderStage1 {
         WriteBackSrc.rd
       )
     )
+    val nopCtrl = InstDecoderInfo1(
+      AluBSrc.imm,
+      AluOp.add,
+      ShiftOp.logicL,
+      WriteBackSrc.rd
+    )
 
     switch(instType) {
       for ((k, v) <- decoderMap) {
         is(k) { ret := v }
       }
+      default { ret := nopCtrl }
     }
 
     ret

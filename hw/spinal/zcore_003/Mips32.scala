@@ -47,9 +47,9 @@ case class Mips32() extends Component {
   val aluResult = Alu(aluSrcA, aluSrcB, instInfo1.aluOp)
   val extImm = Bits(32 bits)
   val regFile = RegFile(
-    instInfo0.rd.asUInt,
-    instInfo0.rs.asUInt,
-    instInfo0.rt.asUInt,
+    instInfo0.rd,
+    instInfo0.rs,
+    instInfo0.rt,
     True,
     aluResult.value
   )
@@ -64,8 +64,8 @@ case class Mips32() extends Component {
     AluBSrc.imm -> extImm
   )
   writeBackSrc := instInfo1.writeBackSrc.mux(
-    WriteBackSrc.rd -> instInfo0.rd.asUInt,
-    WriteBackSrc.rt -> instInfo0.rt.asUInt,
+    WriteBackSrc.rd -> instInfo0.rd,
+    WriteBackSrc.rt -> instInfo0.rt,
   )
 
   io.pc := pc

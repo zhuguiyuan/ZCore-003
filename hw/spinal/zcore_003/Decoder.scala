@@ -177,13 +177,13 @@ object InstDecoderStage1 {
 case class InstDecoderInfo0() extends Bundle {
   val instType = InstType()
   val op = Bits(6 bits)
-  val rs = Bits(5 bits)
-  val rt = Bits(5 bits)
-  val rd = Bits(5 bits)
-  val shamt = Bits(5 bits)
+  val rs = UInt(5 bits)
+  val rt = UInt(5 bits)
+  val rd = UInt(5 bits)
+  val shamt = UInt(5 bits)
   val funct = Bits(6 bits)
   val imm = Bits(16 bits)
-  val taddr = Bits(26 bits)
+  val taddr = UInt(26 bits)
 }
 
 object InstDecoderStage0 {
@@ -193,13 +193,13 @@ object InstDecoderStage0 {
     val ret = InstDecoderInfo0()
 
     ret.op := instruction(31 downto 26)
-    ret.rs := instruction(25 downto 21)
-    ret.rt := instruction(20 downto 16)
-    ret.rd := instruction(15 downto 11)
-    ret.shamt := instruction(10 downto 6)
+    ret.rs := instruction(25 downto 21).asUInt
+    ret.rt := instruction(20 downto 16).asUInt
+    ret.rd := instruction(15 downto 11).asUInt
+    ret.shamt := instruction(10 downto 6).asUInt
     ret.funct := instruction(5 downto 0)
     ret.imm := instruction(15 downto 0)
-    ret.taddr := instruction(25 downto 0)
+    ret.taddr := instruction(25 downto 0).asUInt
     val decodingMap = Map(
       M"000000---------------00000100001" -> InstType.addu,
       M"000000---------------00000100011" -> InstType.subu,

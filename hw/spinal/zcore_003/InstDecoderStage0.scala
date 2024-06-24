@@ -3,7 +3,7 @@ package zcore_003
 import spinal.core._
 import spinal.lib._
 
-case class InstDecoderStage0() {
+case class InstDecoderStage0() extends Component {
   val io = new Bundle {
     val instruction = in Bits (32 bits)
 
@@ -26,9 +26,18 @@ case class InstDecoderStage0() {
   io.instFunct := io.instruction(5 downto 0)
   io.instImm := io.instruction(15 downto 0)
   io.instTAddr := io.instruction(25 downto 0)
-  io.instType := io.instruction.mux(
-    M"001001--------------------------" -> InstType.addiu,
-    default -> InstType.invalid
+  val decodingMap = Map(
+    M"001001--------------------------" -> InstType.addiu
   )
+  switch(io.instruction) {
+    for ((k, v) <- decodingMap) {
+      is(k) { io.instType := v }
+    }
+    default -> { io.instType := InstType.invalid }
+  }
+}
 
+object InstDecoderStage0Verilog extends App {
+  val report = Config.spinal.generateVerilog(InstDecoderStage0())
+  println(report.getRtlString())
 }

@@ -41,31 +41,42 @@ case class Mips32() extends Component {
   val instInfo0 = InstDecoderStage0(io.instruction)
   val instInfo1 = InstDecoderStage1(instInfo0.instType)
   val aluSrcA, aluSrcB = Bits(32 bits)
-  val writeBackSrc = UInt(5 bits)
+  val writeBackRegSrc = UInt(5 bits)
+  val writeBackDataSrc = Bits(32 bits)
+  val shiftSrc = Bits(5 bits)
 
   val pc = Reg(UInt(32 bits))
   val aluResult = Alu(aluSrcA, aluSrcB, instInfo1.aluOp)
   val extImm = Bits(32 bits)
   val regFile = RegFile(
-    writeBackSrc,
+    writeBackRegSrc,
     instInfo0.rs,
     instInfo0.rt,
     True,
-    aluResult.value
+    writeBackDataSrc
   )
+  val shifter = Shifter(regFile.rdata2, shiftSrc, instInfo1.shiftOp)
   pc := pc + 4
 
   extImm := instInfo1.extType.mux(
-    ExtType.zeroExt ->instInfo0.imm.resize(32 bits),
+    ExtType.zeroExt -> instInfo0.imm.resize(32 bits),
     ExtType.signExt -> instInfo0.imm.asSInt.resize(32 bits).asBits
   )
   aluSrcB := instInfo1.aluBSrc.mux(
-    AluBSrc.rt ->regFile.rdata2,
+    AluBSrc.rt -> regFile.rdata2,
     AluBSrc.imm -> extImm
   )
-  writeBackSrc := instInfo1.writeBackSrc.mux(
-    WriteBackSrc.rd -> instInfo0.rd,
-    WriteBackSrc.rt -> instInfo0.rt,
+  writeBackRegSrc := instInfo1.writeBackRegSrc.mux(
+    WriteBackRegSrc.rd -> instInfo0.rd,
+    WriteBackRegSrc.rt -> instInfo0.rt
+  )
+  shiftSrc := instInfo1.shiftSrc.mux(
+    ShiftSrc.sa -> instInfo0.shamt,
+    ShiftSrc.rs -> regFile.rdata1(4 downto 0)
+  )
+  writeBackDataSrc := instInfo1.writeBackDataSrc.mux(
+    WriteBackDataSrc.alu -> aluResult.value,
+    WriteBackDataSrc.shifter -> shifter.value
   )
 
   io.pc := pc

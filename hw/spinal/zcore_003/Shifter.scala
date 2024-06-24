@@ -8,11 +8,13 @@ object ShiftOp extends SpinalEnum {
 }
 
 object Shifter {
-  def apply(a: Bits, b: Bits, shiftOp: ShiftOp.C): Bits = {
+  def apply(a: Bits, b: Bits, shiftOp: ShiftOp.C) = {
     require(a.getBitsWidth == 32)
     require(b.getBitsWidth == 5)
 
-    val ret = Bits(32 bits)
+    val ret = new Bundle {
+      val value = Bits(32 bits)
+    }
 
     val results = Map(
       ShiftOp.arithR -> (a.asSInt >> b.asUInt),
@@ -21,7 +23,7 @@ object Shifter {
     )
     switch(shiftOp) {
       for ((k, v) <- results) {
-        is(k) { ret := v.asBits }
+        is(k) { ret.value := v.asBits }
       }
     }
 

@@ -8,12 +8,20 @@ object CtrlSignals {
     val rt, imm = newElement()
   }
 
-  object WriteBackSrc extends SpinalEnum {
+  object WriteBackRegSrc extends SpinalEnum {
     val rd, rt = newElement()
+  }
+
+  object WriteBackDataSrc extends SpinalEnum {
+    val alu, shifter = newElement()
   }
 
   object ExtType extends SpinalEnum {
     val zeroExt, signExt = newElement()
+  }
+
+  object ShiftSrc extends SpinalEnum {
+    val sa, rs = newElement()
   }
 }
 
@@ -25,7 +33,9 @@ object InstDecoderInfo1 {
       aluBSrc: AluBSrc.C,
       aluOp: AluOp.C,
       shiftOp: ShiftOp.C,
-      writeBackSrc: WriteBackSrc.C,
+      shiftSrc: ShiftSrc.C,
+      writeBackRegSrc: WriteBackRegSrc.C,
+      writeBackDataSrc: WriteBackDataSrc.C,
       extType: ExtType.C
   ): InstDecoderInfo1 = {
     val ret = InstDecoderInfo1()
@@ -33,7 +43,9 @@ object InstDecoderInfo1 {
     ret.aluBSrc := aluBSrc
     ret.aluOp := aluOp
     ret.shiftOp := shiftOp
-    ret.writeBackSrc := writeBackSrc
+    ret.shiftSrc := shiftSrc
+    ret.writeBackRegSrc := writeBackRegSrc
+    ret.writeBackDataSrc := writeBackDataSrc
     ret.extType := extType
 
     ret
@@ -46,7 +58,9 @@ case class InstDecoderInfo1() extends Bundle {
   val aluBSrc = AluBSrc()
   val aluOp = AluOp()
   val shiftOp = ShiftOp()
-  val writeBackSrc = WriteBackSrc()
+  val shiftSrc = ShiftSrc()
+  val writeBackRegSrc = WriteBackRegSrc()
+  val writeBackDataSrc = WriteBackDataSrc()
   val extType = ExtType()
 }
 
@@ -60,98 +74,135 @@ object InstDecoderStage1 {
         AluBSrc.rt,
         AluOp.add,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.subu -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.sub,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.and -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.and,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.or -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.or,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.xor -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.xor,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.nor -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.nor,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.slt -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.slt,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.sltu -> InstDecoderInfo1(
         AluBSrc.rt,
         AluOp.sltu,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.addiu -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.add,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.signExt
       ),
       InstType.andi -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.and,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.ori -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.or,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.xori -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.xor,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.zeroExt
       ),
       InstType.slti -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.slt,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
         ExtType.signExt
       ),
       InstType.sltiu -> InstDecoderInfo1(
         AluBSrc.imm,
         AluOp.sltu,
         ShiftOp.logicL,
-        WriteBackSrc.rd,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ExtType.signExt
+      ),
+      InstType.sll -> InstDecoderInfo1(
+        AluBSrc.rt,
+        AluOp.add,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
         ExtType.signExt
       )
     )
@@ -159,7 +210,9 @@ object InstDecoderStage1 {
       AluBSrc.rt,
       AluOp.add,
       ShiftOp.logicL,
-      WriteBackSrc.rt,
+      ShiftSrc.sa,
+      WriteBackRegSrc.rt,
+      WriteBackDataSrc.alu,
       ExtType.zeroExt
     )
 
@@ -180,7 +233,7 @@ case class InstDecoderInfo0() extends Bundle {
   val rs = UInt(5 bits)
   val rt = UInt(5 bits)
   val rd = UInt(5 bits)
-  val shamt = UInt(5 bits)
+  val shamt = Bits(5 bits)
   val funct = Bits(6 bits)
   val imm = Bits(16 bits)
   val taddr = UInt(26 bits)
@@ -196,7 +249,7 @@ object InstDecoderStage0 {
     ret.rs := instruction(25 downto 21).asUInt
     ret.rt := instruction(20 downto 16).asUInt
     ret.rd := instruction(15 downto 11).asUInt
-    ret.shamt := instruction(10 downto 6).asUInt
+    ret.shamt := instruction(10 downto 6)
     ret.funct := instruction(5 downto 0)
     ret.imm := instruction(15 downto 0)
     ret.taddr := instruction(25 downto 0).asUInt
@@ -214,7 +267,8 @@ object InstDecoderStage0 {
       M"001101--------------------------" -> InstType.ori,
       M"001110--------------------------" -> InstType.xori,
       M"001010--------------------------" -> InstType.slti,
-      M"001011--------------------------" -> InstType.sltiu
+      M"001011--------------------------" -> InstType.sltiu,
+      M"00000000000---------------000000" -> InstType.sll
     )
     switch(instruction) {
       for ((k, v) <- decodingMap) {

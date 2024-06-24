@@ -44,9 +44,9 @@ case class Mips32() extends Component {
   pc := pc + 4
   val aluResult = Alu(aluSrcA, aluSrcB, aluOp)
   val regFile = RegFile(
-    instInfo0.instRd.asUInt,
-    instInfo0.instRs.asUInt,
-    instInfo0.instRt.asUInt,
+    instInfo0.rd.asUInt,
+    instInfo0.rs.asUInt,
+    instInfo0.rt.asUInt,
     True,
     aluResult.value
   )

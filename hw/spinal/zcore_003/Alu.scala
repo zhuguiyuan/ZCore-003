@@ -3,33 +3,18 @@ package zcore_003
 import spinal.core._
 import spinal.lib._
 
-object AluOp {
-  def and = B"000"
-  def or = B"001"
-  def add = B"010"
-  def sltu = B"011"
-  def xor = B"100"
-  def nor = B"101"
-  def sub = B"110"
-  def slt = B"111"
+object AluOp extends SpinalEnum(defaultEncoding = binarySequential) {
+  val and, or, add, sltu, xor, nor, sub, slt = newElement()
 }
 
 case class Alu() extends Component {
-  setName("ALU")
-
   val io = new Bundle {
     val a, b = in Bits (32 bits)
-    val aluOp = in Bits (3 bits)
+    val aluOp = in(AluOp())
     val overflow, carryOut, zero = out Bool ()
     val result = out Bits (32 bits)
-
-    a.setName("A")
-    b.setName("B")
-    overflow.setName("Overflow")
-    carryOut.setName("CarryOut")
-    zero.setName("Zero")
-    result.setName("Result")
   }
+  noIoPrefix()
 
   io.carryOut := False
   switch(io.aluOp) {
@@ -75,4 +60,9 @@ case class Alu() extends Component {
   }
 
   io.zero := io.result === 0
+}
+
+object AluVerilog extends App {
+  val report = Config.spinal.generateVerilog(Alu())
+  println(report.getRtlString())
 }

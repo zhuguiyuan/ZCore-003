@@ -4,7 +4,7 @@ subu  000000---------------00000100011 subu      sub   rt      logicL  sa       
 and   000000---------------00000100100 and       and   rt      logicL  sa       yes          rd              alu              zeroExt    p4
 or    000000---------------00000100101 or        or    rt      logicL  sa       yes          rd              alu              zeroExt    p4
 xor   000000---------------00000100110 xor       xor   rt      logicL  sa       yes          rd              alu              zeroExt    p4
-nor   000000---------------00000100111 nor       not   rt      logicL  sa       yes          rd              alu              zeroExt    p4
+nor   000000---------------00000100111 nor       nor   rt      logicL  sa       yes          rd              alu              zeroExt    p4
 slt   000000---------------00000101010 slt       slt   rt      logicL  sa       yes          rd              alu              zeroExt    p4
 sltu  000000---------------00000101011 sltu      slt   rt      logicL  sa       yes          rd              alu              zeroExt    p4
 addiu 001001-------------------------- addiu     add   imm     logicL  sa       yes          rt              alu              signExt    p4
@@ -26,9 +26,9 @@ bgtz  000111-----00000---------------- bgtz      xor   rt      logicL  sa       
 bltz  000001-----00000---------------- bltz      xor   rt      logicL  sa       no           rd              alu              zeroExt    br
 bgez  000001-----00001---------------- bgez      xor   rt      logicL  sa       no           rd              alu              zeroExt    br
 j     000010-------------------------- j         add   rt      logicL  sa       no           rd              alu              zeroExt    j
-jal   000011-------------------------- jal       add   rt      logicL  sa       yes          nextPc          nextPc           zeroExt    j
+jal   000011-------------------------- jal       add   rt      logicL  sa       yes          r31             nextPc           zeroExt    j
 jr    000000-----000000000000000001000 jr        add   rt      logicL  sa       no           rd              alu              zeroExt    alu
-jalr  000000-----00000-----00000001001 jalr      add   rt      logicL  sa       yes          nextPc          alu              zeroExt    alu
+jalr  000000-----00000-----00000001001 jalr      add   rt      logicL  sa       yes          r31             alu              zeroExt    alu
 lb    100000-------------------------- lb        add   imm     logicL  sa       yes          rt              mem              signExt    p4
 lh    100001-------------------------- lh        add   imm     logicL  sa       yes          rt              mem              signExt    p4
 lw    100011-------------------------- lw        add   imm     logicL  sa       yes          rt              mem              signExt    p4

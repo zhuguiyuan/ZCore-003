@@ -8,7 +8,7 @@ object InstType extends SpinalEnum(defaultEncoding = binaryOneHot) {
   val addiu, andi, ori, xori, slti, sltiu = newElement()
   val sll, sllv, sra, srav, srl, srlv = newElement()
   val bne, beq, bgez, bgtz, blez, bltz, j, jal, jr, jalr = newElement()
-  val lb, lh, lw, lbu, lhu, lwl, ler, sb, sh, sw, swl, swa = newElement()
+  val lb, lh, lw, lbu, lhu, lwl, lwr, sb, sh, sw, swl, swr = newElement()
   val movn, movz, lui = newElement()
   val invalid = newElement()
 }

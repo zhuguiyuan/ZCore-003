@@ -17,7 +17,7 @@ object CtrlSignals {
   }
 
   object WriteBackRegSrc extends SpinalEnum {
-    val rd, rt = newElement()
+    val rd, rt, r31 = newElement()
   }
 
   object WriteBackDataSrc extends SpinalEnum {
@@ -25,7 +25,7 @@ object CtrlSignals {
   }
 
   object ImmExtType extends SpinalEnum {
-    val zeroExt, signExt = newElement()
+    val zeroExt, signExt, luiExt = newElement()
   }
 
   object PcSrc extends SpinalEnum {
@@ -85,186 +85,502 @@ object InstDecoderStage1 {
     val ret = InstDecoderInfo1()
     val decoderMap = Map(
       InstType.addu -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.add,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.subu -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.sub,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.and -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.and,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.or -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.or,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.xor -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.xor,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.nor -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.nor,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.slt -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.slt,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.sltu -> InstDecoderInfo1(
+        AluOp.slt,
         AluBSrc.rt,
-        AluOp.sltu,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.addiu -> InstDecoderInfo1(
-        AluBSrc.imm,
         AluOp.add,
+        AluBSrc.imm,
         ShiftOp.logicL,
         ShiftSrc.sa,
-        WriteBackRegSrc.rd,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
         WriteBackDataSrc.alu,
-        ImmExtType.signExt
+        ImmExtType.signExt,
+        PcSrc.p4
       ),
       InstType.andi -> InstDecoderInfo1(
-        AluBSrc.imm,
         AluOp.and,
+        AluBSrc.imm,
         ShiftOp.logicL,
         ShiftSrc.sa,
-        WriteBackRegSrc.rd,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.ori -> InstDecoderInfo1(
-        AluBSrc.imm,
         AluOp.or,
+        AluBSrc.imm,
         ShiftOp.logicL,
         ShiftSrc.sa,
-        WriteBackRegSrc.rd,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.xori -> InstDecoderInfo1(
-        AluBSrc.imm,
         AluOp.xor,
+        AluBSrc.imm,
         ShiftOp.logicL,
         ShiftSrc.sa,
-        WriteBackRegSrc.rd,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
         WriteBackDataSrc.alu,
-        ImmExtType.zeroExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.slti -> InstDecoderInfo1(
-        AluBSrc.imm,
         AluOp.slt,
+        AluBSrc.imm,
         ShiftOp.logicL,
         ShiftSrc.sa,
-        WriteBackRegSrc.rd,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
         WriteBackDataSrc.alu,
-        ImmExtType.signExt
+        ImmExtType.signExt,
+        PcSrc.p4
       ),
       InstType.sltiu -> InstDecoderInfo1(
+        AluOp.slt,
         AluBSrc.imm,
-        AluOp.sltu,
         ShiftOp.logicL,
         ShiftSrc.sa,
-        WriteBackRegSrc.rd,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
         WriteBackDataSrc.alu,
-        ImmExtType.signExt
+        ImmExtType.signExt,
+        PcSrc.p4
       ),
       InstType.sll -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.add,
+        AluBSrc.rt,
         ShiftOp.logicL,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ImmExtType.signExt
-      ),
-      InstType.sllv -> InstDecoderInfo1(
-        AluBSrc.rt,
-        AluOp.add,
-        ShiftOp.logicL,
-        ShiftSrc.rs,
-        WriteBackRegSrc.rd,
-        WriteBackDataSrc.shifter,
-        ImmExtType.signExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.sra -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.add,
+        AluBSrc.rt,
         ShiftOp.arithR,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ImmExtType.signExt
-      ),
-      InstType.srav -> InstDecoderInfo1(
-        AluBSrc.rt,
-        AluOp.add,
-        ShiftOp.arithR,
-        ShiftSrc.rs,
-        WriteBackRegSrc.rd,
-        WriteBackDataSrc.shifter,
-        ImmExtType.signExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.srl -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.add,
+        AluBSrc.rt,
         ShiftOp.logicR,
         ShiftSrc.sa,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ImmExtType.signExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.sllv -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.rs,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.srav -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.arithR,
+        ShiftSrc.rs,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.shifter,
+        ImmExtType.zeroExt,
+        PcSrc.p4
       ),
       InstType.srlv -> InstDecoderInfo1(
-        AluBSrc.rt,
         AluOp.add,
+        AluBSrc.rt,
         ShiftOp.logicR,
         ShiftSrc.rs,
+        WriteBackEn.yes,
         WriteBackRegSrc.rd,
         WriteBackDataSrc.shifter,
-        ImmExtType.signExt
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.beq -> InstDecoderInfo1(
+        AluOp.xor,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.br
+      ),
+      InstType.bne -> InstDecoderInfo1(
+        AluOp.xor,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.br
+      ),
+      InstType.blez -> InstDecoderInfo1(
+        AluOp.xor,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.br
+      ),
+      InstType.bgtz -> InstDecoderInfo1(
+        AluOp.xor,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.br
+      ),
+      InstType.bltz -> InstDecoderInfo1(
+        AluOp.xor,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.br
+      ),
+      InstType.bgez -> InstDecoderInfo1(
+        AluOp.xor,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.br
+      ),
+      InstType.j -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.j
+      ),
+      InstType.jal -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.r31,
+        WriteBackDataSrc.nextPc,
+        ImmExtType.zeroExt,
+        PcSrc.j
+      ),
+      InstType.jr -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.alu
+      ),
+      InstType.jalr -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.r31,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.alu
+      ),
+      InstType.lb -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.lh -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.lw -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.lbu -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.lhu -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.lwl -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.lwr -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.mem,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.sb -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.sh -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.sw -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.swl -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.swr -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.no,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.signExt,
+        PcSrc.p4
+      ),
+      InstType.movz -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.movn -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.rt,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rd,
+        WriteBackDataSrc.alu,
+        ImmExtType.zeroExt,
+        PcSrc.p4
+      ),
+      InstType.lui -> InstDecoderInfo1(
+        AluOp.add,
+        AluBSrc.imm,
+        ShiftOp.logicL,
+        ShiftSrc.sa,
+        WriteBackEn.yes,
+        WriteBackRegSrc.rt,
+        WriteBackDataSrc.alu,
+        ImmExtType.luiExt,
+        PcSrc.p4
       )
     )
+
     val nopCtrl = InstDecoderInfo1(
       AluOp.add,
       AluBSrc.rt,
@@ -314,6 +630,7 @@ object InstDecoderStage0 {
     ret.funct := instruction(5 downto 0)
     ret.imm := instruction(15 downto 0)
     ret.taddr := instruction(25 downto 0).asUInt
+
     val decodingMap = Map(
       M"000000---------------00000100001" -> InstType.addu,
       M"000000---------------00000100011" -> InstType.subu,
@@ -330,12 +647,38 @@ object InstDecoderStage0 {
       M"001010--------------------------" -> InstType.slti,
       M"001011--------------------------" -> InstType.sltiu,
       M"00000000000---------------000000" -> InstType.sll,
-      M"00000000000---------------000100" -> InstType.sllv,
       M"00000000000---------------000011" -> InstType.sra,
-      M"00000000000---------------000111" -> InstType.srav,
       M"00000000000---------------000010" -> InstType.srl,
-      M"00000000000---------------000110" -> InstType.srlv
+      M"000000---------------00000000100" -> InstType.sllv,
+      M"000000---------------00000000111" -> InstType.srav,
+      M"000000---------------00000000110" -> InstType.srlv,
+      M"000100--------------------------" -> InstType.beq,
+      M"000101-----00000----------------" -> InstType.bne,
+      M"000110--------------------------" -> InstType.blez,
+      M"000111-----00000----------------" -> InstType.bgtz,
+      M"000001-----00000----------------" -> InstType.bltz,
+      M"000001-----00001----------------" -> InstType.bgez,
+      M"000010--------------------------" -> InstType.j,
+      M"000011--------------------------" -> InstType.jal,
+      M"000000-----000000000000000001000" -> InstType.jr,
+      M"000000-----00000-----00000001001" -> InstType.jalr,
+      M"100000--------------------------" -> InstType.lb,
+      M"100001--------------------------" -> InstType.lh,
+      M"100011--------------------------" -> InstType.lw,
+      M"100100--------------------------" -> InstType.lbu,
+      M"100101--------------------------" -> InstType.lhu,
+      M"100010--------------------------" -> InstType.lwl,
+      M"100100--------------------------" -> InstType.lwr,
+      M"101000--------------------------" -> InstType.sb,
+      M"101001--------------------------" -> InstType.sh,
+      M"101011--------------------------" -> InstType.sw,
+      M"101010--------------------------" -> InstType.swl,
+      M"101110--------------------------" -> InstType.swr,
+      M"000000---------------00000001010" -> InstType.movz,
+      M"000000---------------00000001011" -> InstType.movn,
+      M"001111--------------------------" -> InstType.lui
     )
+
     switch(instruction) {
       for ((k, v) <- decodingMap) {
         is(k) { ret.instType := v }

@@ -8,20 +8,28 @@ object CtrlSignals {
     val rt, imm = newElement()
   }
 
+  object ShiftSrc extends SpinalEnum {
+    val sa, rs = newElement()
+  }
+
+  object WriteBackEn extends SpinalEnum {
+    val yes, no = newElement()
+  }
+
   object WriteBackRegSrc extends SpinalEnum {
     val rd, rt = newElement()
   }
 
   object WriteBackDataSrc extends SpinalEnum {
-    val alu, shifter = newElement()
+    val alu, shifter, mem, nextPc = newElement()
   }
 
   object ImmExtType extends SpinalEnum {
     val zeroExt, signExt = newElement()
   }
 
-  object ShiftSrc extends SpinalEnum {
-    val sa, rs = newElement()
+  object PcSrc extends SpinalEnum {
+    val p4, br, j, alu = newElement()
   }
 }
 
@@ -30,23 +38,27 @@ object InstDecoderInfo1 {
 
   // Helper function to build the bundle.
   def apply(
-      aluBSrc: AluBSrc.C,
       aluOp: AluOp.C,
+      aluBSrc: AluBSrc.C,
       shiftOp: ShiftOp.C,
       shiftSrc: ShiftSrc.C,
+      writeBackEn: WriteBackEn.C,
       writeBackRegSrc: WriteBackRegSrc.C,
       writeBackDataSrc: WriteBackDataSrc.C,
-      immExtType: ImmExtType.C
+      immExtType: ImmExtType.C,
+      pcSrc: PcSrc.C
   ): InstDecoderInfo1 = {
     val ret = InstDecoderInfo1()
 
-    ret.aluBSrc := aluBSrc
     ret.aluOp := aluOp
+    ret.aluBSrc := aluBSrc
     ret.shiftOp := shiftOp
     ret.shiftSrc := shiftSrc
+    ret.writeBackEn := writeBackEn
     ret.writeBackRegSrc := writeBackRegSrc
     ret.writeBackDataSrc := writeBackDataSrc
     ret.immExtType := immExtType
+    ret.pcSrc := pcSrc
 
     ret
   }
@@ -55,13 +67,15 @@ object InstDecoderInfo1 {
 case class InstDecoderInfo1() extends Bundle {
   import CtrlSignals._
 
-  val aluBSrc = AluBSrc()
   val aluOp = AluOp()
+  val aluBSrc = AluBSrc()
   val shiftOp = ShiftOp()
   val shiftSrc = ShiftSrc()
+  val writeBackEn = WriteBackEn()
   val writeBackRegSrc = WriteBackRegSrc()
   val writeBackDataSrc = WriteBackDataSrc()
   val immExtType = ImmExtType()
+  val pcSrc = PcSrc()
 }
 
 object InstDecoderStage1 {
@@ -252,13 +266,15 @@ object InstDecoderStage1 {
       )
     )
     val nopCtrl = InstDecoderInfo1(
-      AluBSrc.rt,
       AluOp.add,
+      AluBSrc.rt,
       ShiftOp.logicL,
       ShiftSrc.sa,
+      WriteBackEn.no,
       WriteBackRegSrc.rt,
       WriteBackDataSrc.alu,
-      ImmExtType.zeroExt
+      ImmExtType.zeroExt,
+      PcSrc.p4
     )
 
     switch(instType) {

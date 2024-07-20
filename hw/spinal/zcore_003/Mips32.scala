@@ -44,6 +44,7 @@ case class Mips32() extends Component {
   val writeBackRegSrc = UInt(5 bits)
   val writeBackDataSrc = Bits(32 bits)
   val shiftSrc = Bits(5 bits)
+  val regFileWen = Bool()
 
   val pc = Reg(UInt(32 bits))
   val aluResult = Alu(aluSrcA, aluSrcB, instInfo1.aluOp)
@@ -52,9 +53,17 @@ case class Mips32() extends Component {
     writeBackRegSrc,
     instInfo0.rs,
     instInfo0.rt,
-    True,
+    regFileWen,
     writeBackDataSrc
   )
+  regFileWen := instInfo1.rfWen.mux(
+    RfWen.Y -> True,
+    RfWen.N -> False
+  )
+  rf_wen := regFileWen
+  rf_waddr := writeBackRegSrc
+  rf_wdata := writeBackDataSrc
+
   val shifter = Shifter(regFile.rdata2, shiftSrc, instInfo1.shiftOp)
   pc := pc + 4
 
@@ -62,6 +71,7 @@ case class Mips32() extends Component {
     ImmExtType.zeroExt -> instInfo0.imm.resize(32 bits),
     ImmExtType.signExt -> instInfo0.imm.asSInt.resize(32 bits).asBits
   )
+  aluSrcA := instInfo0.rs.asBits
   aluSrcB := instInfo1.aluBSrc.mux(
     AluBSrc.rt -> regFile.rdata2,
     AluBSrc.imm -> extImm
@@ -78,6 +88,15 @@ case class Mips32() extends Component {
     WriteBackDataSrc.alu -> aluResult.value,
     WriteBackDataSrc.shifter -> shifter.value
   )
+  when(
+    instInfo0.instType === InstType.movz && regFile.rdata2 === 0 ||
+      instInfo0.instType === InstType.movn && regFile.rdata2 =/= 0
+  ) {
+    writeBackDataSrc := regFile.rdata1
+  } otherwise {
+    regFileWen := False
+    rf_wen := True
+  }
 
   io.pc := pc
   io.address := 0
